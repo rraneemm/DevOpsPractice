@@ -1,0 +1,48 @@
+Jenkins Installation and Initial Set up 
+
+Make sure it was a success/ check if it is installed
+- sudo docker -version
+(optional)Add yourself to the docker group to avoid sudo before every docker command
+- sudo usermod -aG docker $USER
+- newgrp docker
+        to test it
+- docker run hello-world
+
+Pull and run jenkins image + renaming it + creating a volume + mapping ports
+- docker run -d -p 8080:8080 -p 50000:50000 --name jenkins-container -v jenkins_home:/var/jenkins_home jenkins/jenkins:>
+
+(optional)Check running containers
+- docker ps
+
+Jenkins Set up
+
+Go to url: localhost:8080
+
+Fetch Admin Password (from inside the docker container's volume)
+- docker exec jenkins-container cat /var/jenkins_home/secrets/initialAdminPassword
+
+Fetch Admin Password (from inside the linux directories)
+- sudo cat /var/lib/docker/volumes/jenkins_home/_data/secrets/initalAdminPassword
+Make sure it was a success/ check if it is installed
+- sudo docker -version
+(optional)Add yourself to the docker group to avoid sudo before every docker command
+- sudo usermod -aG docker $USER
+- newgrp docker
+        to test it
+- docker run hello-world
+
+Pull and run jenkins image + renaming it + creating a volume + mapping ports
+- docker run -d -p 8080:8080 -p 50000:50000 --name jenkins-container -v jenkins_home:/var/jenkins_home jenkins/jenkins:>
+
+(optional)Check running containers
+- docker ps
+
+Jenkins Set up
+
+Go to url: localhost:8080
+
+Fetch Admin Password (from inside the docker container's volume)
+- docker exec jenkins-container cat /var/jenkins_home/secrets/initialAdminPassword
+
+Fetch Admin Password (from inside the linux directories)
+- sudo cat /var/lib/docker/volumes/jenkins_home/_data/secrets/initalAdminPassword
