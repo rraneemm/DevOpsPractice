@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    aws_region: "eu-central-1"
+    ecr_repository_uri: "016903543513.dkr.ecr.eu-central-1.amazonaws.com/raneem_ecr"
+    image_name: "jenkins-custom"
+    dockerfile_path: "~/Desktop/terraform-task/image_psuh/dockerFile_dir/Dockerfile"
+
+  tasks:
+    - name: Retrieve ECR login password
+      command: aws ecr get-login-password --region {{ aws_region }}
+      register: ecr_login_password
+      changed_when: false
+
+    - name: Log in to Docker
+      shell: echo "{{ ecr_login_password.stdout }}" | docker login --username AWS --password-stdin {{ ecr_repository_uri }}
+      changed_when: false
+
+    - name: Build the Jenkins Docker image
+      community.docker.docker_image:
+        name: "{{ image_name }}"
+        source: build
+        build:
+          path: "{{ dockerfile_path | dirname | expanduser }}"
+          dockerfile: "{{ dockerfile_path | basename }}"
+        tag: latest
+        state: present
+      register: build_result
+
+    - name: Tag the Jenkins Docker image
+      command: docker tag {{ image_name }}:latest {{ ecr_repository_uri }}:latest
+
+    - name: Push the Jenkins Docker image to ECR
+      command: docker push {{ ecr_repository_uri }}:latest
